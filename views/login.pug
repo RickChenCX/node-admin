@@ -1,0 +1,42 @@
+doctype html
+html(lang='')
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title #{title}
+    meta(name='description', content='')
+    meta(name='theme-color' content='#4DA5F4')
+    //- meta(name='csrf-token', content=_csrf)
+    link(rel='shortcut icon', href='/images/favicon.png')
+    link(rel='stylesheet', href='/css/main.css')
+
+  body
+   
+    
+    include partials/flash
+
+       
+    div.warp
+        div.login-main
+            
+            div.title|后台管理
+            form.login-form(method="POST", action="/controller/login")
+                div.form-group
+                    label(for="userName")|用户名称:
+                    input.form-control.input-sm(type="text" id="userName" name="username" placeholder="用户名" required)
+                div.form-group
+                    label(for="password")|密码:
+                    input.form-control.input-sm(type="password" id="password" name="password" placeholder="密码" required)
+                div.form-group
+                    label.login-captcha(for="password")
+                        span|验证码:
+                        img(src="/pictrue/captcha", type="", width="90", height="30" title="点我刷新～～" onclick="this.src='/pictrue/captcha?'+Math.random()")
+                    input.form-control.input-sm(type="text" id="captcha" name="captcha")
+                if messages.errors
+                //- p.message.errors #{messages.errors}
+                button(type="submit" class=['btn','btn-primary'])|登陆
+
+
+    script(src='/js/lib/jquery-3.1.1.min.js')
+    script(src='/js/lib/bootstrap.min.js')

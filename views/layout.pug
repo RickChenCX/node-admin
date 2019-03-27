@@ -4,29 +4,42 @@ html(lang='')
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible', content='IE=edge')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
-    title #{title} - Hackathon Starter
+    title #{title}
     meta(name='description', content='')
     meta(name='theme-color' content='#4DA5F4')
-    meta(name='csrf-token', content=_csrf)
+    //- meta(name='csrf-token', content=_csrf)
     link(rel='shortcut icon', href='/images/favicon.png')
     link(rel='stylesheet', href='/css/main.css')
 
   body
-    include partials/header
-
-    .container
+    //- include partials/header
+  
+    
+    .container-fluid.wrap
+      ul(class="nav nav-pills nav-stacked" id="tabList")
+        li(class="active" role="presentation")
+          a(href="#home" aria-controls="home" role="tab" data-toggle="tab") 用户管理
+        li(class="") 
+          a(href="#profile" aria-controls="profile" role="tab" data-toggle="tab") 文章管理
+        li(class="") 
+          a(href="#messages" aria-controls="messages" role="tab" data-toggle="tab") 留言管理
+      div(class="tab-content content")
+        div(role="tabpanel" class="tab-pane active" id="home") 1...
+        div(role="tabpanel" class="tab-pane" id="profile") 2...
+        div(role="tabpanel" class="tab-pane" id="messages") 3...
+        div(role="tabpanel" class="tab-pane" id="settings") 4...
       include partials/flash
       block content
 
-    include partials/footer
+    //- include partials/footer
 
     script(src='/js/lib/jquery-3.1.1.min.js')
     script(src='/js/lib/bootstrap.min.js')
-    script(async defer src="https://buttons.github.io/buttons.js")
+    //- script(async defer src="https://buttons.github.io/buttons.js")
     script(src='/js/main.js')
 
     //- Google Analytics: change UA-38177297-2 to be your site's ID
-    script.
-      window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
-      ga('create','UA-38177297-2','auto');ga('send','pageview')
-    script(src='https://www.google-analytics.com/analytics.js' async defer)
+    //- script.
+    //-   window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+    //-   ga('create','UA-38177297-2','auto');ga('send','pageview')
+    //- script(src='https://www.google-analytics.com/analytics.js' async defer)

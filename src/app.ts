@@ -13,6 +13,9 @@ import passport from "passport";
 import expressValidator from "express-validator";
 import bluebird from "bluebird";
 import { MONGODB_URI, SESSION_SECRET } from "./util/secrets";
+import cors from "cors";
+
+// import history from "connect-history-api-fallback";
 
 const MongoStore = mongo(session);
 
@@ -20,11 +23,13 @@ const MongoStore = mongo(session);
 dotenv.config({ path: ".env.example" });
 
 // Controllers (route handlers)
-import * as homeController from "./controllers/home";
-import * as userController from "./controllers/user";
-import * as apiController from "./controllers/api";
-import * as contactController from "./controllers/contact";
-
+// import * as homeController from "./controllers/home";
+// import * as userController from "./controllers/user";
+// import * as apiController from "./controllers/api";
+// import * as contactController from "./controllers/contact";
+const user = require("./controllers/userController");
+const fsMd = require("./controllers/fsMdFileController");
+const home = require("./controllers/home");
 
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
@@ -33,7 +38,7 @@ import * as passportConfig from "./config/passport";
 const app = express();
 
 // Connect to MongoDB
-const mongoUrl = MONGODB_URI;
+const mongoUrl = MONGODB_URI ; // "mongodb://localhost:27017/blog"; // ;
 (<any>mongoose).Promise = bluebird;
 mongoose.connect(mongoUrl, {useMongoClient: true}).then(
   () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ },
@@ -68,58 +73,54 @@ app.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 });
+app.use(
+  express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
+);
 app.use((req, res, next) => {
   // After successful login, redirect back to the intended page
   if (!req.user &&
     req.path !== "/login" &&
-    req.path !== "/signup" &&
+    req.path !== "/register" &&
     !req.path.match(/^\/auth/) &&
     !req.path.match(/\./)) {
     req.session.returnTo = req.path;
-  } else if (req.user &&
-    req.path == "/account") {
+  } else if (req.user ) {
     req.session.returnTo = req.path;
   }
   next();
 });
+// app.all("*", passportConfig.isAuthorized);
 
-app.use(
-  express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
-);
 
+// cors 配置
+let whitelist: Array<string> = ["http://localhost:8080", "http://localhost:8081"];
+let corsOptionsDelegate = function (req: any, callback: any) {
+  let corsOptions;
+  if (whitelist.indexOf(req.header("Origin")) !== -1) {
+    corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
+  } else {
+    corsOptions = { origin: false }; // disable CORS for this request
+  }
+  callback(undefined, corsOptions); // callback expects two parameters: error and options
+};
 /**
- * Primary app routes.
+ * router 路由
  */
-app.get("/", homeController.index);
-app.get("/login", userController.getLogin);
-app.post("/login", userController.postLogin);
-app.get("/logout", userController.logout);
-app.get("/forgot", userController.getForgot);
-app.post("/forgot", userController.postForgot);
-app.get("/reset/:token", userController.getReset);
-app.post("/reset/:token", userController.postReset);
-app.get("/signup", userController.getSignup);
-app.post("/signup", userController.postSignup);
-app.get("/contact", contactController.getContact);
-app.post("/contact", contactController.postContact);
-app.get("/account", passportConfig.isAuthenticated, userController.getAccount);
-app.post("/account/profile", passportConfig.isAuthenticated, userController.postUpdateProfile);
-app.post("/account/password", passportConfig.isAuthenticated, userController.postUpdatePassword);
-app.post("/account/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
-app.get("/account/unlink/:provider", passportConfig.isAuthenticated, userController.getOauthUnlink);
-
+app.get("/login", user.Login);
+app.get("/", home.index);
+app.get("/register", user.Register);
 /**
- * API examples routes.
+ * 图片验证码
  */
-app.get("/api", apiController.getApi);
-app.get("/api/facebook", passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getFacebook);
-
+app.get("/pictrue/captcha", user.getSvgCaptcha);
 /**
- * OAuth authentication routes. (Sign in)
+ * 登陆验证接口
  */
-app.get("/auth/facebook", passport.authenticate("facebook", { scope: ["email", "public_profile"] }));
-app.get("/auth/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/login" }), (req, res) => {
-  res.redirect(req.session.returnTo || "/");
-});
+app.post("/controller/login", user.postLogin);
+/**
+ * 注册接口
+ */
+app.use("/controller/register", user.register);
+app.use("/file", cors(corsOptionsDelegate), fsMd.fileMessage);
 
 export default app;

@@ -1,0 +1,70 @@
+$width-small:  450px;
+$width-medium: 760px;
+$width-large:  1100px;
+@mixin responsive($width) {
+    @if $width == $width-large {
+        @media only screen and (min-width: $width-large) { @content; }
+    }
+    @else if $width == $width-medium {
+        @media only screen and (min-width: $width-medium) and (max-width:$width-large) { @content; }
+    }
+    @else if $width == $width-small {
+        @media only screen and (max-width: $width-medium) and (min-width:$width-small){ @content; }
+    }
+}
+.warp{
+    width: 100%;
+    height: 100%;
+    background: url("../../images/login/bg1.jpg") no-repeat ;
+    background-size: cover;
+    
+}
+.login-main{
+    min-width: 300px;
+    padding: 10px;
+    background-color: rgba($color: #000000, $alpha: .1);
+    border-radius: 5px;
+    margin: auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    .errors{
+        color: red
+    } 
+    button{
+        text-align: center;
+        display: block;
+        margin: 0 auto;
+    }
+    @include responsive($width-large){
+        width: 20rem;
+        height:375px;
+    }
+    @include responsive($width-medium){
+        width: 20rem;
+        height: 375px;
+
+    }
+    @include responsive($width-small){
+        width: 100%;
+        height: 100%;
+
+    }
+    .login-captcha{
+        display: flex;
+        justify-content: space-between;
+        cursor: pointer;
+    }
+    .title{
+        padding: 10px 0;
+        font-size: 2rem;
+        font-weight: 600;
+        text-align: center;
+        border-bottom: 1px solid #000;
+        margin-bottom: 20px;
+    }
+}
+
+
