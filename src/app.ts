@@ -38,7 +38,7 @@ import * as passportConfig from "./config/passport";
 const app = express();
 
 // Connect to MongoDB
-const mongoUrl = MONGODB_URI ; // "mongodb://localhost:27017/blog"; // ;
+const mongoUrl = "mongodb://localhost:27017/blog" ; // "mongodb://localhost:27017/blog"; // ;
 (<any>mongoose).Promise = bluebird;
 mongoose.connect(mongoUrl, {useMongoClient: true}).then(
   () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ },
@@ -109,6 +109,9 @@ let corsOptionsDelegate = function (req: any, callback: any) {
 app.get("/login", user.Login);
 app.get("/", home.index);
 app.get("/register", user.Register);
+app.get("/userForm", home.userForm);
+app.get("/messages", home.messagePage);
+
 /**
  * 图片验证码
  */
@@ -122,5 +125,17 @@ app.post("/controller/login", user.postLogin);
  */
 app.use("/controller/register", user.register);
 app.use("/file", cors(corsOptionsDelegate), fsMd.fileMessage);
+/**
+ * admin用户列表
+ */
+app.use("/controller/adminUserList", user.getUsrList);
+/**
+ * 删除用户
+ */
+app.use("/controller/deleteUser", user.deleteUser);
+/**
+ * 用户登出
+ */
+app.use("/controller/logout", user.quitUser);
 
 export default app;

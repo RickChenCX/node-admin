@@ -10,27 +10,43 @@ html(lang='')
     //- meta(name='csrf-token', content=_csrf)
     link(rel='shortcut icon', href='/images/favicon.png')
     link(rel='stylesheet', href='/css/main.css')
-
+    
   body
     //- include partials/header
-  
     
     .container-fluid.wrap
-      ul(class="nav nav-pills nav-stacked" id="tabList")
-        li(class="active" role="presentation")
-          a(href="#home" aria-controls="home" role="tab" data-toggle="tab") 用户管理
-        li(class="") 
-          a(href="#profile" aria-controls="profile" role="tab" data-toggle="tab") 文章管理
-        li(class="") 
-          a(href="#messages" aria-controls="messages" role="tab" data-toggle="tab") 留言管理
-      div(class="tab-content content")
-        div(role="tabpanel" class="tab-pane active" id="home") 1...
-        div(role="tabpanel" class="tab-pane" id="profile") 2...
-        div(role="tabpanel" class="tab-pane" id="messages") 3...
-        div(role="tabpanel" class="tab-pane" id="settings") 4...
-      include partials/flash
-      block content
+      div(class="left-content")
+        div(class="admin-title") admin管理
+        ul(class="nav nav-pills nav-stacked" id="tabList")
+          - var navList = [{name:"用户管理", file:"userForm"},{name:"文章管理",file:"profile",name:"消息管理",file:"messages"}]
+          - let filename = name
+            each val,index in navList
+              if val.file==filename
+                li(class="active")
+                  a(href="/"+val.file+"?name="+val.file)=val.name
+              else
+                li(class="")
+                  a(href="/"+val.file+"?name="+val.file)=val.name    
+          //- li(class="active")
+          //-   a(href="/userForm?name=userForm" ) 用户管理
+          //- li(class="") 
+          //-   a(href="/profile?name=profile" ) 文章管理
+          //- li(class="") 
+          //-   a(href="/messages?=messages" ) 留言管理
+      div(class="content")
+        div(class="right-nav ")
+          span(class="current-user") 当前用户：#{username}
+          span(class="quit")
+            a(href="/controller/logout") 退出
+        block content
 
+        //- div(class="tab-content ")
+        //-   div(role="tabpanel" class="tab-pane active" id="home") 
+        //-     
+        //-   div(role="tabpanel" class="tab-pane" id="profile") 2...
+        //-   div(role="tabpanel" class="tab-pane" id="messages") 3...
+        //-   div(role="tabpanel" class="tab-pane" id="settings") 4...
+      include partials/flash
     //- include partials/footer
 
     script(src='/js/lib/jquery-3.1.1.min.js')

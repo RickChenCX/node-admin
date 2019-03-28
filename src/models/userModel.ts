@@ -23,7 +23,7 @@ type comparePasswordFunction = (candidatePassword: string, cb: (err: any, isMatc
 
 
 // 保存之前做一下加密
-userSchema.pre("pre", function save(next) {
+userSchema.pre("save", function save(next) {
     // cryptoJs.MD5(req.body.password).toString());
     const user = this;
     if (!user.isModified("password")) { return next(); }

@@ -43,20 +43,6 @@ footer {
 textarea {
   resize: vertical;
 }
-.wrap{
-  display: flex;
-  height: 100%;
-  padding: 0;
-  #tabList{
-    width: 200px;
-    height: 100%;
-    background-color: currentColor;
-    li{
-      text-align: center;
-    }
-  }
-  .content{
-    width: calc(100% - 200px);
-  }
-}
+
 @import "parts/login";
+@import "parts/index";

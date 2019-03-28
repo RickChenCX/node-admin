@@ -40,12 +40,18 @@ class UserController {
         res.status(200).send(captcha.data);
     }
     postLogin(req: Request, res: Response, next: NextFunction): void {
-        console.log(req.body);
+        logger.info( req.session.captcha);
         req.checkBody("username", "userName is empty").notEmpty();
         req.checkBody("password", "password is empty").notEmpty();
         req.checkBody("captcha", "captcha is empty").notEmpty();
+        let smallCaptcha = req.body.captcha.toLowerCase();
+        let localCaptcha = req.session.captcha.toLowerCase();
         if (req.validationErrors()) {
           req.flash("errors", "参数错误");
+          return res.redirect("/login");
+        }
+        if (smallCaptcha != localCaptcha) {
+          req.flash("errors", "验证码错误");
           return res.redirect("/login");
         }
 
@@ -59,15 +65,12 @@ class UserController {
             req.logIn(user, (err) => {
               if (err) { return next(err); }
               res.locals.message = req.flash("success",  "Success! You are logged in.");
-              res.redirect( "/"); // req.session.returnTo ||
+              res.redirect("/");
             });
 
           })(req, res, next);
       }
       register(req: Request, res: Response, next: NextFunction): void {
-        logger.info(req.body);
-        logger.info(req.query);
-
         req.checkBody("username", "userName is empty").notEmpty();
         req.checkBody("password", "password is empty").notEmpty();
 
@@ -97,6 +100,27 @@ class UserController {
         });
 
       }
+     async getUsrList(req: Request, res: Response, next: NextFunction) {
+        let msg = await User.find({}, {username: 1, _id: 1}, (err, data) => {
+          if (err) return err ;
+          logger.info("query successful ");
+          return data;
+        });
+        res.send(JSON.stringify(msg));
+
+    }
+    async deleteUser(req: Request, res: Response) {
+      let msg = await User.findByIdAndRemove(req.query.id, (err, data) => {
+        if (err) return err;
+        logger.info("delete successful");
+        return JSON.stringify(data);
+      });
+      res.send(msg);
+    }
+    async quitUser(req: Request, res: Response) {
+      req.logout();
+      res.redirect("/");
+    }
 }
 
 let user =  new UserController();

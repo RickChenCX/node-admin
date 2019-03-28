@@ -1,0 +1,49 @@
+.content{
+    width: calc(100% - 200px);
+    .right-nav{
+        background-color: #666;
+        padding: 0 10px;
+        display: flex;
+        line-height: 40px;
+        // justify-content: space-between;
+        justify-content: flex-end;
+    }
+    .current-user{
+        color: #fff;
+        margin-right: 20px;
+    }
+    .quit{
+        color: #cd5c5c;
+        cursor: pointer;
+    }
+}
+.wrap{
+    display: flex;
+    height: 100%;
+    padding: 0;
+    .left-content{
+        width: 200px;
+        .admin-title{
+            background-color: #666;
+            line-height: 40px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #fff;
+            border-right: 1px solid #fff
+        }
+        #tabList{
+            width:100%;
+            height: calc(100% - 40px);
+            background-color: currentColor;
+            li{
+              text-align: center;
+              margin: 5px 0;
+            //   color: #fff;
+                a{
+                    cursor: pointer;
+                }
+            }
+          }
+    }
+  }
