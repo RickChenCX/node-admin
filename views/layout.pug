@@ -10,7 +10,7 @@ html(lang='')
     //- meta(name='csrf-token', content=_csrf)
     link(rel='shortcut icon', href='/images/favicon.png')
     link(rel='stylesheet', href='/css/main.css')
-    
+    link(rel='stylesheet', href="../node_modules/bootstrap-table/dist/bootstrap-table.min.css")
   body
     //- include partials/header
     
@@ -27,12 +27,7 @@ html(lang='')
               else
                 li(class="")
                   a(href="/"+val.file+"?name="+val.file)=val.name    
-          //- li(class="active")
-          //-   a(href="/userForm?name=userForm" ) 用户管理
-          //- li(class="") 
-          //-   a(href="/profile?name=profile" ) 文章管理
-          //- li(class="") 
-          //-   a(href="/messages?=messages" ) 留言管理
+        
       div(class="content")
         div(class="right-nav ")
           span(class="current-user") 当前用户：#{username}
@@ -51,7 +46,6 @@ html(lang='')
 
     script(src='/js/lib/jquery-3.1.1.min.js')
     script(src='/js/lib/bootstrap.min.js')
-    //- script(async defer src="https://buttons.github.io/buttons.js")
     script(src='/js/main.js')
 
     //- Google Analytics: change UA-38177297-2 to be your site's ID

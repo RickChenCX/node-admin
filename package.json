@@ -31,6 +31,7 @@
     "bcrypt-nodejs": "^0.0.3",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
+    "bootstrap-table": "^1.14.2",
     "compression": "^1.7.1",
     "connect-mongo": "^2.0.0",
     "cors": "^2.8.5",
