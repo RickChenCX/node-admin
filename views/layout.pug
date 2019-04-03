@@ -10,13 +10,14 @@ html(lang='')
     //- meta(name='csrf-token', content=_csrf)
     link(rel='shortcut icon', href='/images/favicon.png')
     link(rel='stylesheet', href='/css/main.css')
-    link(rel='stylesheet', href="../node_modules/bootstrap-table/dist/bootstrap-table.min.css")
+    link(rel='stylesheet', href="/js/lib/bootstrap-table/bootstrap-table.min.css")
   body
     //- include partials/header
     
     .container-fluid.wrap
       div(class="left-content")
-        div(class="admin-title") admin管理
+        div(class="admin-title")
+          a(href="/" style="color:#fff") admin管理
         ul(class="nav nav-pills nav-stacked" id="tabList")
           - var navList = [{name:"用户管理", file:"userForm"},{name:"文章管理",file:"profile",name:"消息管理",file:"messages"}]
           - let filename = name
@@ -46,6 +47,8 @@ html(lang='')
 
     script(src='/js/lib/jquery-3.1.1.min.js')
     script(src='/js/lib/bootstrap.min.js')
+    script(src='/js/lib/bootstrap-table/bootstrap-table.min.js')
+    script(src="/js/lib/bootstrap-table/locale/bootstrap-table-zh-CN.min.js")
     script(src='/js/main.js')
 
     //- Google Analytics: change UA-38177297-2 to be your site's ID

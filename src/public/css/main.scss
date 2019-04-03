@@ -43,6 +43,13 @@ footer {
 textarea {
   resize: vertical;
 }
+.bootstrap-table{
+  width: 95%;
+  margin: 0 auto;
+}
+.content{
+  background-color: #edf2f6;
+}
 
 @import "parts/login";
 @import "parts/index";
