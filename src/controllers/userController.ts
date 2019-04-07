@@ -7,6 +7,7 @@ import passport = require("passport");
 import { IVerifyOptions } from "passport-local";
 import { default as User, UserModel } from "../models/userModel";
 const valid = require("express-validator");
+import bcrypt from "bcrypt-nodejs";
 
 class UserController {
     constructor() {
@@ -90,12 +91,13 @@ class UserController {
           }
           user.save((err) => {
               if (err) { return next(err); }
-              req.logIn(user, (err) => {
-                if (err) {
-                  return next(err);
-                }
-                res.redirect("/");
-              });
+              res.locals.message = req.flash("success", "添加成功" );
+              res.redirect("/");
+              // req.logIn(user, (err) => {
+              //   if (err) {
+              //     return next(err);
+              //   }
+              // });
             });
         });
 
@@ -106,16 +108,47 @@ class UserController {
           logger.info("query successful ");
           return data;
         });
-        res.send(JSON.stringify(msg));
+        return res.send(JSON.stringify(msg));
 
     }
-    async deleteUser(req: Request, res: Response) {
-      let msg = await User.findByIdAndRemove(req.query.id, (err, data) => {
-        if (err) return err;
+    async deleteUser(req: Request, res: Response, next: NextFunction) {
+      User.findByIdAndRemove(req.query.id, (err, data) => {
+        if (err) {
+          logger.error(err);
+          res.status(500).send({errorMsg: "删除失败", errorCode: 500});
+        }
         logger.info("delete successful");
-        return JSON.stringify(data);
+        res.status(200).send({errorMsg: "删除成功", errorCode: 200});
       });
-      res.send(msg);
+    }
+    async updateUser(req: Request, res: Response, next: NextFunction) {
+      req.checkBody("username", "userName is empty").notEmpty();
+      req.checkBody("password", "password is empty").notEmpty();
+      if (req.validationErrors()) {
+        res.locals.message = req.flash("errors", "参数错误");
+        return res.redirect("/userForm?name=userForm");
+      }
+      let user = {
+        username: req.body.username,
+        password: req.body.password
+      };
+      await bcrypt.genSalt(10, (err, salt) => {
+        if (err) { return next(err); }
+        bcrypt.hash(user.password, salt, undefined, (err: Error, hash) => {
+          if (err) { return next(err); }
+          user.password = hash;
+          next();
+        });
+      });
+      await User.findByIdAndUpdate(req.body._id, user, (err, result) => {
+        if (err) {
+          res.locals.message = req.flash("error", "更新失败" );
+          return next(err) ;
+        }
+        res.locals.message = req.flash("success", "更新成功" );
+        next(result);
+      });
+      return res.redirect("/userForm?name=userForm");
     }
     async quitUser(req: Request, res: Response) {
       req.logout();

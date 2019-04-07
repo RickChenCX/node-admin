@@ -111,6 +111,7 @@ app.get("/", home.index);
 app.get("/register", user.Register);
 app.get("/userForm", home.userForm);
 app.get("/messages", home.messagePage);
+app.get("/file", home.filePage);
 
 /**
  * 图片验证码
@@ -133,6 +134,10 @@ app.use("/controller/adminUserList", user.getUsrList);
  * 删除用户
  */
 app.use("/controller/deleteUser", user.deleteUser);
+/**
+ * 更新用户账号密码
+ */
+app.use("/controller/updateUser", user.updateUser);
 /**
  * 用户登出
  */

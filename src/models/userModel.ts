@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt-nodejs";
 import crypto from "crypto";
+import logger from "../util/logger";
 
 export type UserModel = mongoose.Document & {
     id: Number,
@@ -20,7 +21,6 @@ const  userSchema = new mongoose.Schema({
 });
 
 type comparePasswordFunction = (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
-
 
 // 保存之前做一下加密
 userSchema.pre("save", function save(next) {

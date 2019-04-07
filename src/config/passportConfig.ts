@@ -21,10 +21,13 @@ passport.use(new Strategy(
         User.findOne({username: username}, function(err: any, user: any) {
             if (err) { return done(err) ; }
             if (!user) { return done(undefined, false, {message: "Incorrect username"}); }
-            if (user.password != password ) {
-                return done(undefined, false, {message: "Incorrect password"});
-            }
-            return done(undefined, user);
+            user.comparePassword(password, (err: Error, isMatch: Boolean) => {
+                if (err) { return done(err); }
+                if (isMatch) {
+                  return done(undefined, user);
+                }
+                return done(undefined, false, { message: "Invalid email or password." });
+            });
         });
     }
 ));

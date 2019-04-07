@@ -18,7 +18,7 @@ export let userForm = (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.redirect("/login");
   }
-  res.render("userForm", {
+  return res.render("userForm", {
     title: "userForm",
     username: req.user.username,
     name: req.query.name
@@ -31,6 +31,16 @@ export let messagePage = (req: Request, res: Response, next: NextFunction) => {
   }
   res.render("messages", {
     title: "messages",
+    username: req.user.username,
+    name: req.query.name
+  });
+};
+export let filePage = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.redirect("/login");
+  }
+  res.render("file", {
+    title: "file",
     username: req.user.username,
     name: req.query.name
   });
