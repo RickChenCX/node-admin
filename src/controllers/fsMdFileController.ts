@@ -2,15 +2,22 @@ import path from "path";
 import fs from "fs";
 import logger from "../util/logger";
 import { Request, Response, NextFunction } from "express";
+import formidable from "formidable";
 
-
-class ReadMdFile {
+class UploadMd {
     constructor() {
         // super();
     }
+    public uploadMdFie(req: Request, res: Response, next: NextFunction) {
+        let target = path.resolve(__dirname, "../public/md");
+    }
+}
+class ReadMdFile extends UploadMd {
+    constructor() {
+        super();
+    }
     public fileMessage(req: Request, res: Response, next: NextFunction): void {
-        logger.info(__dirname);
-        let data: any = "";
+        let data: string = "";
         let readStream: any = fs.createReadStream( path.resolve(__dirname, "../public/md/interface.md"), {encoding: "utf-8"});
         // logger.info( readStream );
 

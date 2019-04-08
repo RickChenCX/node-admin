@@ -23,10 +23,6 @@ const MongoStore = mongo(session);
 dotenv.config({ path: ".env.example" });
 
 // Controllers (route handlers)
-// import * as homeController from "./controllers/home";
-// import * as userController from "./controllers/user";
-// import * as apiController from "./controllers/api";
-// import * as contactController from "./controllers/contact";
 const user = require("./controllers/userController");
 const fsMd = require("./controllers/fsMdFileController");
 const home = require("./controllers/home");
@@ -41,7 +37,9 @@ const app = express();
 const mongoUrl = "mongodb://localhost:27017/blog" ; // "mongodb://localhost:27017/blog"; // ;
 (<any>mongoose).Promise = bluebird;
 mongoose.connect(mongoUrl, {useMongoClient: true}).then(
-  () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ },
+  () => {
+     /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
+ },
 ).catch(err => {
   console.log("MongoDB connection error. Please make sure MongoDB is running. " + err);
   // process.exit();
