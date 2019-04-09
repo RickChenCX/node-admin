@@ -140,5 +140,9 @@ app.use("/controller/updateUser", user.updateUser);
  * 用户登出
  */
 app.use("/controller/logout", user.quitUser);
+/**
+ * 文件上传，主要是md文件
+ */
+app.use("/controller/uploadFile", fsMd.uploadMdFie);
 
 export default app;

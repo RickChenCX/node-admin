@@ -49,6 +49,7 @@ textarea {
 }
 .content{
   background-color: #edf2f6;
+  overflow: auto;
 }
 
 @import "parts/login";

@@ -28,6 +28,8 @@ $(document).ready(function() {
   tableInit();
   useModals(userFormMsg);
   useModals(editUserFormRow);
+  // initFileInput("file-input", "/controller/uploadFile");
+
 });
 let addUserReq = function() {
   console.log(123);
@@ -161,3 +163,24 @@ let useModals = function (arg: UserForm) {
       $("#Form" + arg.id).submit();
     });
 };
+
+// 文件上传
+// 初始化fileinput控件（第一次初始化）
+// function initFileInput(ctrlName: string, uploadUrl: string) {
+//   console.log(ctrlName, uploadUrl);
+//   let control = $("#" + ctrlName);
+
+//   $("#file-input").fileinput({
+//       language: "zh", // 设置语言
+//       uploadUrl: uploadUrl, // 上传的地址
+//       allowedFileExtensions : ["md"], // 接收的文件后缀
+//       showUpload: false, // 是否显示上传按钮
+//       showCaption: false, // 是否显示标题
+//       browseClass: "btn btn-primary", // 按钮样式
+//       previewFileIcon: "<i class='glyphicon glyphicon-king'></i>"
+//   });
+  // control.on("filebatchselected", function(event, files) {
+  //   console.log(event);
+  //   control.fileinput("upload");
+  // });
+// }
