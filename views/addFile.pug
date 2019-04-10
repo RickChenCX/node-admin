@@ -1,0 +1,27 @@
+extends layout
+block content
+    div(class="container-fluid" style="width:60%")
+      div(class="row" )
+        form(enctype="multipart/form-data")
+          div(class="form-group")
+            label(for="file-title") 标题
+            input(type="text" class="form-control" id="file-title")
+          div(class="form-group")
+            label(for="file-describe") 描述
+            input(type="text" class="form-control" id="file-describe")  
+          div(class="form-group")
+            label(for="file-type") 分类
+            select(name="" class="form-control" id="file-language") 
+                option(value="" disabled selected) 请选择
+                option() java 
+                option() javascript 
+                option() mysql 
+                option() mongodb 
+                option() linux 
+                option() other 
+          div(class="form-group")
+            label(for="") 上传文章
+            input(type="file" name="file" id="file-input" class="file" )
+          div(class="form-group" style="text-align:center")
+            button( type="button" class="btn btn-primary" id="submit-file") 提交
+

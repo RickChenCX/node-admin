@@ -9,6 +9,7 @@ class ReadMdFile   {
     constructor() {
         // super();
     }
+    // 已弃用 fileMessage 方法
     public fileMessage(req: Request, res: Response, next: NextFunction): void {
         let data: string = "";
         let readStream: any = fs.createReadStream( path.resolve(__dirname, "../public/md/interface.md"), {encoding: "utf-8"});
@@ -78,7 +79,7 @@ class ReadMdFile   {
                 const FileArg = new File({
                     language: fields.language,
                     title: fields.title,
-                    subtitle: fields.subtile,
+                    subtitle: fields.subtitle,
                     createTime: fields.createTime,
                     content: data
                 });
@@ -94,6 +95,16 @@ class ReadMdFile   {
             });
             // logger.info("info", {message: fields});
             // logger.info("path", {message: files.file.path});
+        });
+    }
+    public async selectFile(req: Request, res: Response, next: NextFunction) {
+        let arg = req.body || {};
+        await File.find(arg , (err: any, doc: Document[]) => {
+            if (err) {
+                res.locals.message = req.flash("errors", err);
+                return res.redirect("/");
+            }
+            res.json(doc);
         });
     }
 }

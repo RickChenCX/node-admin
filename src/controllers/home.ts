@@ -45,3 +45,13 @@ export let filePage = (req: Request, res: Response, next: NextFunction) => {
     name: req.query.name
   });
 };
+export let addFilePage = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.redirect("/login");
+  }
+  res.render("addFile", {
+    title: "addFile",
+    username: req.user.username,
+    name: req.query.name
+  });
+};

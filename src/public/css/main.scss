@@ -51,6 +51,15 @@ textarea {
   background-color: #edf2f6;
   overflow: auto;
 }
+// table 表显示过长样式
+table{
+  table-layout:fixed
+}
+td{
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
 
 @import "parts/login";
 @import "parts/index";

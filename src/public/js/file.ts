@@ -20,10 +20,6 @@ $("#submit-file").click(() => {
     $("#file-input").fileinput("upload");
 });
 $("#file-input").on("fileuploaded", function(event, data, previewId, index) {
-    // console.log(data);
-    // console.log(event);
-    // console.log(previewId);
-    // console.log(index);
     if (data.response.errorCode == 200) {
         window.location.href = "/file?name=file";
     }

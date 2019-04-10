@@ -110,7 +110,7 @@ app.get("/register", user.Register);
 app.get("/userForm", home.userForm);
 app.get("/messages", home.messagePage);
 app.get("/file", home.filePage);
-
+app.get("/addFile", home.addFilePage);
 /**
  * 图片验证码
  */
@@ -144,5 +144,8 @@ app.use("/controller/logout", user.quitUser);
  * 文件上传，主要是md文件
  */
 app.use("/controller/uploadFile", fsMd.uploadMdFie);
-
+/**
+ * 查询文件接口
+ */
+app.use("/controller/selectFile", fsMd.selectFile);
 export default app;
