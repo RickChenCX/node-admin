@@ -43,13 +43,13 @@ class ReadMdFile   {
             console.log("文件已关闭！");
         });
     }
-    public uploadMdFie(req: Request, res: Response, next: NextFunction) {
+    public  uploadMdFie(req: Request, res: Response, next: NextFunction) {
         let form = new formidable.IncomingForm();
         form.encoding = "utf-8";
         form.uploadDir = path.resolve(__dirname, "../public/md");
         form.keepExtensions = true;
 
-        form.parse(req, function(err, fields, files) {
+        form.parse(req,  function(err, fields, files) {
             if (err) return next(err);
             let filePath = files.file.path;
             let fileName = files.file.name;
@@ -74,7 +74,7 @@ class ReadMdFile   {
                 data += chunk;
             });
             // 文件读取完成事件
-            readStream.on("end", () => {
+            readStream.on("end", async () => {
                 console.log("读取已完成..");
                 const FileArg = new File({
                     language: fields.language,
@@ -83,11 +83,36 @@ class ReadMdFile   {
                     createTime: fields.createTime,
                     content: data
                 });
-                FileArg.save( (err) => {
-                    if (err) return next(err);
-                    res.locals.message = req.flash("success", "添加成功" );
-                    res.send({errorCode: 200, errorMessage: "上传成功"});
-                });
+                const updateFile = {
+                    language: fields.language,
+                    title: fields.title,
+                    subtitle: fields.subtitle,
+                    createTime: fields.createTime,
+                    content: data
+                };
+                if (fields.id) {
+                    logger.info("message", "updata");
+                    await File.findByIdAndUpdate(fields.id, updateFile , (err, data) => {
+                        if (err) {
+                            res.locals.message = req.flash("errors", err);
+                            return res.redirect("/");
+                        }
+                        res.locals.message = req.flash("success", "修改成功" );
+                        res.send({errorCode: 200, errorMessage: "修改成功"});
+                    });
+                } else {
+                    await FileArg.save( (err) => {
+                        if (err) return next(err);
+                        res.locals.message = req.flash("success", "添加成功" );
+                        res.send({errorCode: 200, errorMessage: "上传成功"});
+                    });
+                }
+                // 输入mongodb完成后，删除上传目录里的文件
+                fs.unlink(filePath, function (err) {
+                    if (err) return console.log(err);
+                        console.log("文件删除成功");
+                     });
+
             });
             // 文件已关闭事件
             readStream.on("close", () => {
@@ -105,6 +130,15 @@ class ReadMdFile   {
                 return res.redirect("/");
             }
             res.json(doc);
+        });
+    }
+    public async deleteFile(req: Request, res: Response, next: NextFunction) {
+        await File.findByIdAndRemove(req.query.id, (err, data) => {
+            if (err) {
+                res.locals.message = req.flash("errors", err);
+                return res.redirect("/file?name=file");
+            }
+            return res.send({errorCode: 200, errorMessage: "删除成功"});
         });
     }
 }

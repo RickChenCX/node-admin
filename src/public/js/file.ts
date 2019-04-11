@@ -24,7 +24,13 @@ $("#file-input").on("fileuploaded", function(event, data, previewId, index) {
         window.location.href = "/file?name=file";
     }
 });
-// $("#file-input").on("filebatchselected", function(event, files) {
-//     console.log(event);
-//     $("#file-input").fileinput("upload");
-// });
+
+$(".myeditFile").click(() => {
+    $("#file-input").fileinput("upload");
+});
+$("#modify-file").on("fileuploaded", function(event, data, previewId, index) {
+    if (data.response.errorCode == 200) {
+        window.location.href = "/file?name=file";
+    }
+});
+

@@ -3,6 +3,7 @@ interface ModalArg {
   type: string;
   name: string;
   id: string;
+  child?: string[];
 }
 interface UserForm {
   id: string;
@@ -11,6 +12,7 @@ interface UserForm {
   arg: ModalArg[];
   submit: Function;
   url: string;
+  formEntype: string;
 }
 interface UserFormRow {
   _id?: string;
@@ -23,6 +25,7 @@ $(document).ready(function() {
     title: "新增用户",
     confirmBtn: "添加",
     url: "/controller/register",
+    formEntype: "application/x-www-form-urlencoded",
     arg: [
       {type : "text", name: "用户名", id: "username" },
       {type : "text", name: "密码", id: "password" },
@@ -39,21 +42,58 @@ $(document).ready(function() {
       {type : "text", name: "用户名", id: "username" },
       {type : "text", name: "密码", id: "password" },
     ],
+    formEntype: "application/x-www-form-urlencoded",
     submit: addUserReq
+  };
+  let editFileForm = {
+      id: "editFile",
+      title: "修改文章",
+      confirmBtn: "编辑",
+      url: "",
+      formEntype: "multipart/form-data",
+      arg: [
+        {type : "text", name: "id", id: "_id" },
+        {type : "text", name: "标题", id: "title" },
+        {type : "text", name: "描述", id: "subtitle" },
+        {type : "select", name: "分类", id: "language", child: ["java", "javascript", "mysql", "mongodb", "linux", "other"] },
+        {type : "file", name: "上传文章", id: "modify-file" },
+      ],
+      submit: addUserReq
   };
   tableInit();
   tableFile();
   useModals(userFormMsg);
   useModals(editUserFormRow);
-  // initFileInput("file-input", "/controller/uploadFile");
+  useModals(editFileForm);
 
+
+  /**
+   * 修改文章 fileInput初始化
+   */
+  $("#modify-file").fileinput({
+    language: "zh", // 设置语言
+    uploadUrl: "/controller/uploadFile", // 上传的地址
+    allowedFileExtensions : ["md"], // 接收的文件后缀
+    showUpload: true, // 是否显示上传按钮
+    showCaption: false, // 是否显示标题
+    browseClass: "btn btn-primary", // 按钮样式
+    previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+    uploadExtraData: () => {
+        let data = {
+            title: $("#myeditFile input[name='title']").val(),
+            subtitle: $("#myeditFile input[name='subtitle']").val(),
+            language: $("#myeditFile select option[selected]").val(),
+            createTime: new Date()
+        };
+        return data;
+    }
+  });
 });
 let addUserReq = function() {
   console.log(123);
 };
 // bootstrap-table参数封装
 let tableConfig = function (url: string, params: object, columns: object[], toolbarEl: string) {
-  console.log(toolbarEl);
   return {
     url: url,
     toolbarAlign: "left",
@@ -144,11 +184,6 @@ let tableFile = function() {
       align: "center"
     },
     {
-      field: "language",
-      title: "分类",
-      align: "center"
-    },
-    {
       field: "title",
       title: "标题",
       align: "center"
@@ -156,6 +191,11 @@ let tableFile = function() {
     {
       field: "subtitle",
       title: "描述",
+      align: "center"
+    },
+    {
+      field: "language",
+      title: "分类",
       align: "center"
     },
     {
@@ -172,11 +212,11 @@ let tableFile = function() {
       },
       events: {
         "click .modifyFile": function(e: any, value: any, row: any, index: any) {
-          console.log(row);
           let len = $("#editFile ").find("input").length as Number;
           for ( let k in row) {
             for (let i = 0; i < len; i++) {
               if (k == $("#editFile ").find("input").eq(i).attr("name")) {
+
                 $("#editFile ").find("input").eq(i).val(row[k]);
               }
             }
@@ -184,7 +224,7 @@ let tableFile = function() {
         },
         "click .deleteFile": function(e: any, value: any, row: any, index: any) {
           console.log(row , index);
-          $.get("/controller/deleteUser", {"id": row["_id"] }, function( data) {
+          $.get("/controller/deleteFile", {"id": row["_id"] }, function( data) {
               if (data.errorCode == 200) {
                 $("#fileForm").find("tr").eq(index).remove();
               }
@@ -194,6 +234,9 @@ let tableFile = function() {
     }
   ];
   $("#fileForm").bootstrapTable(tableConfig(url, params, columns, ".addFile"));
+  $(".addFile").on("click", function() {
+    window.location.href = "/addFile?name=file";
+  });
 
 };
 
@@ -201,20 +244,36 @@ let tableFile = function() {
 let useModals = function (arg: UserForm) {
     let str = "";
     arg.arg.map( (item, i) => {
-      if (item.type == "file") {
-        // str += "<div class='form-group'><label for=" + item.id + " class='control-label'></label><input type='file' class='form-control' id=" + item.id + "></div>";
-      } else {
-        if (item.name == "id") {
-          str += "<div class='form-group'><label for=" + item.id + " class='control-label'>" + item.name + "</label><input type='text' readonly class='form-control' name=" + item.id + "></div>";
+      switch (item.type) {
+        case "file":
+            str += "<div class='form-group'><label for=" + item.id + " class='control-label'></label><input type='file' name='file' class='file' id=" + item.id + "></div>";
+          break;
+        case "text":
+            if (item.name == "id") {
+              str += "<div class='form-group'><label for=" + item.id + " class='control-label'>" + item.name + "</label><input type='text' readonly class='form-control' name=" + item.id + "></div>";
 
-        } else {
-          str += "<div class='form-group'><label for=" + item.id + " class='control-label'>" + item.name + "</label><input type='text' class='form-control' name=" + item.id + "></div>";
-
-        }
+            } else {
+              str += "<div class='form-group'><label for=" + item.id + " class='control-label'>" + item.name + "</label><input type='text' class='form-control' name=" + item.id + "></div>";
+            }
+          break;
+        case "select":
+            let op = "";
+            item.child.map( result => {
+                op += "<option>" + result + "</option>";
+            });
+            str += "<div class='form-group'><label for=" + item.id + " class='control-label'>" + item.name + "</label><select  class='form-control' id=" + item.id + "><option selected disabled>请选择<option> " + op + " </select></div>";
+          break;
       }
     });
+    let actionUrl ;
+
+    if (arg.url != "") {
+      actionUrl = " action=" + arg.url;
+    } else {
+      actionUrl = "";
+    }
     let myModalLabel = "my" + arg.id;
-    let modalsBody = " <div class='modal-body'><form id=Form" + arg.id + " action=" + arg.url + " method='POST'>" + str + "</form></div>";
+    let modalsBody = " <div class='modal-body'><form enctype=" + arg.formEntype + " id=Form" + arg.id + actionUrl +  " method='POST'>" + str + "</form></div>";
     let footers = "<div class='modal-footer'><button type='button' class='btn btn-default' data-dismiss='modal'>关闭</button>" +
     "<button type='button' class='btn btn-primary " + myModalLabel + " ' >" + arg.confirmBtn + "</button></div>";
     let box = "<div class='modal fade bs-example-modal-md' id=" + arg.id + " tabindex='-1' role='dialog' aria-labelledby=" + myModalLabel + "><div class='modal-dialog modal-md' role='document'>" +
@@ -228,3 +287,5 @@ let useModals = function (arg: UserForm) {
       $("#Form" + arg.id).submit();
     });
 };
+
+

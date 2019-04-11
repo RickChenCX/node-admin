@@ -148,4 +148,8 @@ app.use("/controller/uploadFile", fsMd.uploadMdFie);
  * 查询文件接口
  */
 app.use("/controller/selectFile", fsMd.selectFile);
+/**
+ * 删除文件信息
+ */
+app.use("/controller/deleteFile", fsMd.deleteFile);
 export default app;
