@@ -143,7 +143,9 @@ app.use("/controller/logout", user.quitUser);
 /**
  * 文件上传，主要是md文件
  */
-app.use("/controller/uploadFile", fsMd.uploadMdFie);
+app.use("/controller/uploadFile", fsMd.uploadMdFile);
+app.use("/controller/updateFile", fsMd.updateFile);
+
 /**
  * 查询文件接口
  */

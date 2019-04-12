@@ -55,7 +55,7 @@ $(document).ready(function() {
         {type : "text", name: "id", id: "_id" },
         {type : "text", name: "标题", id: "title" },
         {type : "text", name: "描述", id: "subtitle" },
-        {type : "select", name: "分类", id: "language", child: ["java", "javascript", "mysql", "mongodb", "linux", "other"] },
+        {type : "select", name: "分类", id: "editFile-language", child: ["java", "javascript", "mysql", "mongodb", "linux", "other"] },
         {type : "file", name: "上传文章", id: "modify-file" },
       ],
       submit: addUserReq
@@ -72,22 +72,31 @@ $(document).ready(function() {
    */
   $("#modify-file").fileinput({
     language: "zh", // 设置语言
-    uploadUrl: "/controller/uploadFile", // 上传的地址
+    uploadUrl: "/controller/updateFile", // 上传的地址
     allowedFileExtensions : ["md"], // 接收的文件后缀
-    showUpload: true, // 是否显示上传按钮
+    showUpload: false, // 是否显示上传按钮
     showCaption: false, // 是否显示标题
     browseClass: "btn btn-primary", // 按钮样式
     previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
     uploadExtraData: () => {
         let data = {
-            title: $("#myeditFile input[name='title']").val(),
-            subtitle: $("#myeditFile input[name='subtitle']").val(),
-            language: $("#myeditFile select option[selected]").val(),
+            id: $("#FormeditFile input[name='_id']").val(),
+            title: $("#FormeditFile input[name='title']").val(),
+            subtitle: $("#FormeditFile input[name='subtitle']").val(),
+            language: $("#editFile-language option:selected").val(),
             createTime: new Date()
         };
         return data;
     }
-  });
+});
+$(".myeditFile").click(() => {
+  $("#modify-file").fileinput("upload");
+});
+$("#modify-file").on("fileuploaded", function(event, data, previewId, index) {
+  if (data.response.errorCode == 200) {
+      window.location.href = "/file?name=file";
+  }
+});
 });
 let addUserReq = function() {
   console.log(123);
@@ -273,7 +282,7 @@ let useModals = function (arg: UserForm) {
       actionUrl = "";
     }
     let myModalLabel = "my" + arg.id;
-    let modalsBody = " <div class='modal-body'><form enctype=" + arg.formEntype + " id=Form" + arg.id + actionUrl +  " method='POST'>" + str + "</form></div>";
+    let modalsBody = " <div class='modal-body'><form enctype=" + arg.formEntype + " id=Form" + arg.id + actionUrl +  " >" + str + "</form></div>";
     let footers = "<div class='modal-footer'><button type='button' class='btn btn-default' data-dismiss='modal'>关闭</button>" +
     "<button type='button' class='btn btn-primary " + myModalLabel + " ' >" + arg.confirmBtn + "</button></div>";
     let box = "<div class='modal fade bs-example-modal-md' id=" + arg.id + " tabindex='-1' role='dialog' aria-labelledby=" + myModalLabel + "><div class='modal-dialog modal-md' role='document'>" +
