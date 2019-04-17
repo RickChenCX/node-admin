@@ -99,7 +99,6 @@ $("#modify-file").on("fileuploaded", function(event, data, previewId, index) {
 });
 });
 let addUserReq = function() {
-  console.log(123);
 };
 // bootstrap-table参数封装
 let tableConfig = function (url: string, params: object, columns: object[], toolbarEl: string) {
