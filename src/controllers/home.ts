@@ -55,3 +55,14 @@ export let addFilePage = (req: Request, res: Response, next: NextFunction) => {
     name: req.query.name
   });
 };
+
+export let tagPage = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.redirect("/login");
+  }
+  res.render("tag", {
+    title: "tag",
+    username: req.user.username,
+    name: req.query.name
+  });
+};

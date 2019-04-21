@@ -60,11 +60,27 @@ $(document).ready(function() {
       ],
       submit: addUserReq
   };
+  let addTag = {
+    id: "addTag",
+    title: "添加tag标签",
+    confirmBtn: "添加",
+    url: "/controller/addTag",
+    arg: [
+      {type : "text", name: "名称", id: "name" },
+    ],
+    formEntype: "application/x-www-form-urlencoded",
+    submit: addUserReq
+  };
+  // table 初始化
   tableInit();
   tableFile();
+  tableTag();
+
+  // bootstrap 模态框生成
   useModals(userFormMsg);
   useModals(editUserFormRow);
   useModals(editFileForm);
+  useModals(addTag);
 
 
   /**
@@ -171,6 +187,7 @@ let tableInit = function() {
             $.get("/controller/deleteUser", {"id": row["_id"] }, function( data) {
                 if (data.errorCode == 200) {
                   $("#userForm").find("tr").eq(index).remove();
+                  $("#userForm").bootstrapTable("refresh");
                 }
             });
           }
@@ -245,6 +262,53 @@ let tableFile = function() {
   $(".addFile").on("click", function() {
     window.location.href = "/addFile?name=file";
   });
+
+};
+let tableTag = function() {
+    let url = "/controller/selectTag";
+    let params = {};
+    let columns = [
+      {
+        field: "_id",
+        title: "id",
+        align: "center",
+      }, {
+        field: "name",
+        title: "标签名",
+        align: "center"
+      }, {
+        title: "操作",
+        align: "center",
+        formatter: (value: any, row: any, index: number) => {
+          return "<button  class='modifyTag btn-in-table btn btn-info btn-sm' data-toggle='modal' data-target='#editTag'>修改</button>  " +
+          "<button  class='deleteTag btn-in-table btn btn-danger btn-sm'>删除</button>";
+        },
+        events: {
+          "click .modifyTag": function(e: any, value: any, row: any, index: any) {
+            console.log(row);
+            let len = $("#editTag ").find("input").length as Number;
+            for ( let k in row) {
+              for (let i = 0; i < len; i++) {
+                if (k == $("#editTag ").find("input").eq(i).attr("name")) {
+                  $("#editTag ").find("input").eq(i).val(row[k]);
+                }
+              }
+            }
+          },
+          "click .deleteTag": function(e: any, value: any, row: any, index: any) {
+            console.log(row , index);
+            $.get("/controller/deleteTag", {"id": row["_id"] }, function( data) {
+                if (data.errorCode == 200) {
+                  $("#tagForm").find("tr").eq(index).remove();
+                  $("#tagForm").bootstrapTable("refresh");
+
+                }
+            });
+          }
+        }
+      }
+    ];
+    $("#tagForm").bootstrapTable(tableConfig(url, params, columns, ".addTag"));
 
 };
 

@@ -104,6 +104,9 @@ class ReadMdFile   {
     }
     public async selectFile(req: Request, res: Response, next: NextFunction) {
         let arg = req.body || {};
+        let arg1 = req.params || {};
+        logger.info("message", {info: arg});
+        logger.info("message",  {info: arg});
         await File.find(arg , (err: any, doc: Document[]) => {
             if (err) {
                 res.locals.message = req.flash("errors", err);

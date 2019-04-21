@@ -26,6 +26,7 @@ dotenv.config({ path: ".env.example" });
 const user = require("./controllers/userController");
 const fsMd = require("./controllers/fsMdFileController");
 const home = require("./controllers/home");
+const tag = require("./controllers/tagController");
 
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
@@ -111,6 +112,8 @@ app.get("/userForm", home.userForm);
 app.get("/messages", home.messagePage);
 app.get("/file", home.filePage);
 app.get("/addFile", home.addFilePage);
+app.get("/tag", home.tagPage);
+
 /**
  * 图片验证码
  */
@@ -149,9 +152,17 @@ app.use("/controller/updateFile", fsMd.updateFile);
 /**
  * 查询文件接口
  */
-app.use("/controller/selectFile", fsMd.selectFile);
+app.use("/controller/selectFile", cors(corsOptionsDelegate), fsMd.selectFile);
 /**
  * 删除文件信息
  */
 app.use("/controller/deleteFile", fsMd.deleteFile);
+/**
+ * 标签的接口
+ */
+app.use("/controller/selectTag", tag.selectTag);
+app.use("/controller/addTag", tag.addTag);
+app.use("/controller/deleteTag", tag.deleteTag);
+app.use("/controller/updateTag", tag.updateTag);
+
 export default app;

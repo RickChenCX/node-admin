@@ -20,7 +20,7 @@ html(lang='')
         div(class="admin-title")
           a(href="/" style="color:#fff") admin管理
         ul(class="nav nav-pills nav-stacked" id="tabList")
-          - var navList = [{name:"用户管理", file:"userForm"},{name:"文章管理",file:"profile",name:"消息管理",file:"messages"},{name:"文章管理", file:"file"},]
+          - var navList = [{name:"用户管理", file:"userForm"},{name:"文章管理",file:"file"},{name:"消息管理",file:"messages"},{name:"标签管理", file:"tag"},]
           - let filename = name
             each val,index in navList
               if val.file==filename
