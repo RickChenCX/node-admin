@@ -160,7 +160,7 @@ app.use("/controller/deleteFile", fsMd.deleteFile);
 /**
  * 标签的接口
  */
-app.use("/controller/selectTag", tag.selectTag);
+app.use("/controller/selectTag", cors(corsOptionsDelegate), tag.selectTag);
 app.use("/controller/addTag", tag.addTag);
 app.use("/controller/deleteTag", tag.deleteTag);
 app.use("/controller/updateTag", tag.updateTag);

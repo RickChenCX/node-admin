@@ -11,19 +11,19 @@ class TagControl {
         });
         Tag.findOne({name: req.query.name}, (err, existingTag) => {
             if (err) {
-                res.locals.message = req.flash("error", "添加失败" );
-                return res.send({errorCode: 500, errorMessage: "添加失败"});
+                res.locals.message = req.flash("errors", "添加失败" );
+                return res.redirect("/tag?name=tag");
             }
             if (existingTag) {
-                res.locals.message = req.flash("error", "已存在该数据" );
-                return res.send({errorCode: 500, errorMessage: "添加失败"});
+                res.locals.message = req.flash("errors", "已存在该数据" );
+                return res.redirect("/tag?name=tag");
             }
             TagData.save( (err) => {
                 if (err) {
                     return next(err);
                 }
                 res.locals.message = req.flash("success", "添加成功" );
-                return res.send({errorCode: 200, errorMessage: "添加成功"});
+                return res.redirect("/tag?name=tag");
             });
         });
     }
@@ -36,22 +36,28 @@ class TagControl {
     deleteTag(req: Request, res: Response, next: NextFunction) {
         Tag.deleteOne({_id: req.query.id}, (err) => {
             if (err) {
-                res.locals.message = req.flash("error", "删除失败" );
-                res.send({errorCode: 500, errorMessage: "添加失败"});
+                res.locals.message = req.flash("errors", "删除失败" );
+                return res.redirect("/tag?name=tag");
             }
+            // res.locals.message = req.flash("success", "删除成功" );
             res.send({errorCode: 200, errorMessage: "删除成功"});
         });
     }
     updateTag(req: Request, res: Response, next: NextFunction) {
-        let TagData = new Tag({
-            name: req.body.name
-        });
-        Tag.findByIdAndUpdate(req.body._id, TagData, (err) => {
+        // logger.info("info", {info: req.query});
+        // logger.info("info", {info: req.body});
+        // logger.info("info", {info: req.params});
+        let TagData = {
+            name: req.query.name
+        };
+        Tag.findByIdAndUpdate(req.query._id, TagData, (err) => {
             if (err) {
-                res.locals.message = req.flash("error", "更新失败" );
-                res.send({errorCode: 500, errorMessage: "更新失败"});
+                logger.info("info", {error: err});
+                res.locals.message = req.flash("errors", "更新失败" );
+                return res.redirect("/tag?name=tag");
             }
-            res.send({errorCode: 200, errorMessage: "更新成功"});
+            res.locals.message = req.flash("success", "更新成功" );
+            return res.redirect("/tag?name=tag");
         });
     }
 }

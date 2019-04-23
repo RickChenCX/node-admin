@@ -1,9 +1,12 @@
 
+interface Tag {
+  name: string;
+}
 interface ModalArg {
   type: string;
   name: string;
   id: string;
-  child?: string[];
+  child?: Tag[];
 }
 interface UserForm {
   id: string;
@@ -18,8 +21,11 @@ interface UserFormRow {
   _id?: string;
   username?: string;
 }
-$(document).ready(function() {
+$(document).ready(async function  () {
   // Place JavaScript code here...
+  let tagList = await getTag().then((data) => {
+    return data;
+  });
   let userFormMsg = {
     id: "addUser",
     title: "新增用户",
@@ -55,7 +61,7 @@ $(document).ready(function() {
         {type : "text", name: "id", id: "_id" },
         {type : "text", name: "标题", id: "title" },
         {type : "text", name: "描述", id: "subtitle" },
-        {type : "select", name: "分类", id: "editFile-language", child: ["java", "javascript", "mysql", "mongodb", "linux", "other"] },
+        {type : "select", name: "分类", id: "editFile-language", child: tagList },
         {type : "file", name: "上传文章", id: "modify-file" },
       ],
       submit: addUserReq
@@ -71,6 +77,18 @@ $(document).ready(function() {
     formEntype: "application/x-www-form-urlencoded",
     submit: addUserReq
   };
+  let editTag = {
+    id: "editTag",
+    title: "编辑tag标签",
+    confirmBtn: "编辑",
+    url: "/controller/updateTag",
+    arg: [
+      {type : "text", name: "id", id: "_id" },
+      {type : "text", name: "名称", id: "name" },
+    ],
+    formEntype: "application/x-www-form-urlencoded",
+    submit: addUserReq
+  };
   // table 初始化
   tableInit();
   tableFile();
@@ -81,7 +99,13 @@ $(document).ready(function() {
   useModals(editUserFormRow);
   useModals(editFileForm);
   useModals(addTag);
+  useModals(editTag);
+  // 添加文章option
+  tagList.map( result => {
+    let el = "<option>" + result.name + "</option>";
+    $("#file-language").append(el);
 
+  });
 
   /**
    * 修改文章 fileInput初始化
@@ -109,10 +133,10 @@ $(".myeditFile").click(() => {
   $("#modify-file").fileinput("upload");
 });
 $("#modify-file").on("fileuploaded", function(event, data, previewId, index) {
-  if (data.response.errorCode == 200) {
-      window.location.href = "/file?name=file";
-  }
-});
+    if (data.response.errorCode == 200) {
+        window.location.href = "/file?name=file";
+    }
+  });
 });
 let addUserReq = function() {
 };
@@ -331,7 +355,7 @@ let useModals = function (arg: UserForm) {
         case "select":
             let op = "";
             item.child.map( result => {
-                op += "<option>" + result + "</option>";
+                op += "<option>" + result.name + "</option>";
             });
             str += "<div class='form-group'><label for=" + item.id + " class='control-label'>" + item.name + "</label><select  class='form-control' id=" + item.id + "><option selected disabled>请选择<option> " + op + " </select></div>";
           break;
@@ -345,7 +369,7 @@ let useModals = function (arg: UserForm) {
       actionUrl = "";
     }
     let myModalLabel = "my" + arg.id;
-    let modalsBody = " <div class='modal-body'><form enctype=" + arg.formEntype + " id=Form" + arg.id + actionUrl +  " >" + str + "</form></div>";
+    let modalsBody = " <div class='modal-body'><form methods='post' enctype=" + arg.formEntype + " id=Form" + arg.id + actionUrl +  " >" + str + "</form></div>";
     let footers = "<div class='modal-footer'><button type='button' class='btn btn-default' data-dismiss='modal'>关闭</button>" +
     "<button type='button' class='btn btn-primary " + myModalLabel + " ' >" + arg.confirmBtn + "</button></div>";
     let box = "<div class='modal fade bs-example-modal-md' id=" + arg.id + " tabindex='-1' role='dialog' aria-labelledby=" + myModalLabel + "><div class='modal-dialog modal-md' role='document'>" +
@@ -360,4 +384,18 @@ let useModals = function (arg: UserForm) {
     });
 };
 
+// 请求数据方法
+function getTag(): Promise<Tag[]> {
+    // let tag: Tag[];
+    // $.getJSON("controller/selectTag", (data) => {
+    //   console.log(data);
+    //   tag = data;
+    //   return tag;
+    // });
+    return new Promise( (resolve, reject) => {
+      $.getJSON("/controller/selectTag", (data) => {
+        resolve(data);
+      });
+    });
+}
 
